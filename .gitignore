@@ -1,0 +1,7 @@
+# things I don't want added to package
+wip-*
+
+# ignore package bundles
+*.tar.*
+
+.DS_Store
