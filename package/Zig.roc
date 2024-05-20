@@ -1,4 +1,7 @@
-module [builtins]
+module [
+    builtins,
+    enumToStr,
+]
 
 import "zig-builtins/list.zig" as rocStdList : Str
 import "zig-builtins/str.zig" as rocStdStr : Str
@@ -18,3 +21,25 @@ builtins = [
     { name: "roc/panic.zig", content: rocPanic },
     { name: "roc/result.zig", content: rocResult },
 ]
+
+enumToStr : {ident: Str, fields: List Str} -> Result Str _
+enumToStr = \{ident, fields} ->
+
+    fieldsToStr = \in, buf ->
+        when in is
+            [] -> Err ExpectedAField
+            [curr] -> Ok "$(buf)\n    $(curr),\n"
+            [curr, .. as rest] -> fieldsToStr rest "$(buf)\n    $(curr),"
+
+    fieldsToStr fields ""
+    |> Result.map \enumFields -> "const $(ident) = enum {$(enumFields)};"
+
+expect
+    actual = enumToStr {ident: "Type", fields: ["ok", "not_ok"]}
+    actual == Ok
+    """
+    const Type = enum {
+        ok,
+        not_ok,
+    };
+    """
