@@ -1,3 +1,6 @@
+#ifndef ROC_STD
+#define ROC_STD
+
 #include <stdlib.h>
 
 struct RocStr {
@@ -11,3 +14,5 @@ struct RocList {
     size_t len;
     size_t capacity;
 };
+
+#endif
